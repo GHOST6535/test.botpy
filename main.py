@@ -13,7 +13,6 @@ if not TOKEN:
 
 intents = discord.Intents.default()
 intents.message_content = True
-intents.members = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
@@ -80,7 +79,7 @@ async def on_ready():
 
     while True:
         await send_random_image()
-        await asyncio.sleep(600)
+        await asyncio.sleep(420)
 
 @bot.command(name="status")
 async def status(ctx):
@@ -100,67 +99,11 @@ async def status(ctx):
 @bot.command(name="restart")
 async def restart(ctx):
     if ctx.author.id not in DEVELOPER_IDS:
-        await ctx.send("You do not have permission to use this command.")
+        await ctx.send("Only Ghostyy can access this command.")
         return
 
-    await ctx.send("Bot is restarting...")
+    await ctx.send("M2PLO WORKER is restarting...")
     os.system("python main.py")  # Replace with your actual run command
     await bot.close()
 
-@bot.command(name="timeout")
-@commands.has_permissions(moderate_members=True)
-async def timeout(ctx, member: discord.Member, time: int, reason=None):
-    """Times out a member for a specified time (in seconds)."""
-    if ctx.author.top_role <= member.top_role:
-        em = discord.Embed(title="Error", description="You cannot timeout someone with an equal or higher role than you.", color=discord.Color.red())
-        await ctx.send(embed=em)
-        return
-
-    try:
-        duration = timedelta(seconds=time)
-        await member.timeout(duration, reason=reason)
-        em = discord.Embed(title="Timeout", description=f"{member.mention} has been timed out for {time} seconds.", color=discord.Color.green())
-        if reason:
-            em.add_field(name="Reason", value=reason, inline=False)
-        await ctx.send(embed=em)
-    except Exception as e:
-        em = discord.Embed(title="Error", description=f"Error timing out member: {e}", color=discord.Color.red())
-        await ctx.send(embed=em)
-
-@timeout.error
-async def timeout_error(ctx, error):
-    if isinstance(error, commands.MissingPermissions):
-        em = discord.Embed(title="Error", description="You do not have permission to timeout members.", color=discord.Color.red())
-        await ctx.send(embed=em)
-    elif isinstance(error, commands.BadArgument):
-        em = discord.Embed(title="Error", description="Invalid arguments. Please provide a member and a time in seconds.", color=discord.Color.red())
-        await ctx.send(embed=em)
-    else:
-        em = discord.Embed(title="Error", description=f"An unexpected error occurred: {error}", color=discord.Color.red())
-        await ctx.send(embed=em)
-
-@bot.command(name="kick")
-@commands.has_permissions(kick_members=True)
-async def kick(ctx, member: discord.Member, *, reason=None):
-    """Kicks a member from the server."""
-    if ctx.author.top_role <= member.top_role:
-        em = discord.Embed(title="Error", description="You cannot kick someone with an equal or higher role than you.", color=discord.Color.red())
-        await ctx.send(embed=em)
-        return
-    try:
-        await member.kick(reason=reason)
-        em = discord.Embed(title="Kick", description=f"{member.mention} has been kicked.", color=discord.Color.green())
-        if reason:
-            em.add_field(name="Reason", value=reason, inline=False)
-        await ctx.send(embed=em)
-    except Exception as e:
-        em = discord.Embed(title="Error", description=f"Error kicking member: {e}", color=discord.Color.red())
-        await ctx.send(embed=em)
-
-@kick.error
-async def kick_error(ctx, error):
-    if isinstance(error, commands.MissingPermissions):
-        em = discord.Embed(title="Error", description="You do not have permission to kick members.", color=discord.Color.red())
-        await ctx.send(embed=em)
-    elif isinstance(error, commands.BadArgument):
-        em = discord.Embed(title="Error", description="Invalid arguments. Please provide a member.", color=discord.Color.red())
+bot.run(TOKEN)
