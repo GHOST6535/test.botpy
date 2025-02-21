@@ -79,7 +79,7 @@ async def on_ready():
 
     while True:
         await send_random_image()
-        await asyncio.sleep(600)
+        await asyncio.sleep(420)
 
 @bot.command(name="status")
 async def status(ctx):
