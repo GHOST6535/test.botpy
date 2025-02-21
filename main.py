@@ -24,7 +24,7 @@ if not os.path.exists(IMAGE_DIR):
 IMAGE_FILES = [
     os.path.join(IMAGE_DIR, f) for f in os.listdir(IMAGE_DIR)
     if os.path.isfile(os.path.join(IMAGE_DIR, f))
-    and f.lower().endswith(('image.png', 'image2.png', 'image3.png', 'image4.png','image5.png','image6.jpg'))
+    and f.lower().endswith(('image.png', 'image2.png', 'image3.png', 'image4.png','image5.png','image6.jpg','image7.png'))
 ]
 
 if not IMAGE_FILES:
