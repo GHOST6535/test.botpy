@@ -13,7 +13,6 @@ if not TOKEN:
 
 intents = discord.Intents.default()
 intents.message_content = True  # Required for message content
-# intents.members = True #Not needed since role command is removed
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
@@ -33,6 +32,7 @@ if not IMAGE_FILES:
 
 TARGET_CHANNEL_ID = 1332420477959929878  # Replace with your channel ID
 TARGET_GUILD_ID = 1332420476877934642  # Replace with the target guild ID
+ANNOUNCEMENT_CHANNEL_ID = 1332421696887717959  # Replace with your announcement channel ID
 
 async def send_random_image():
     try:
@@ -77,6 +77,8 @@ async def on_ready():
     print(f"{bot.user} has connected to Discord!")
     print(f"Target channel ID (hardcoded): {TARGET_CHANNEL_ID}")
     print(f"Target Guild ID (hardcoded): {TARGET_GUILD_ID}")
+    print(f"Announcement Channel ID (hardcoded): {ANNOUNCEMENT_CHANNEL_ID}")
+
 
     await bot.change_presence(status=discord.Status.do_not_disturb, activity=discord.Streaming(name="Hail M2PLO", url="http://youtube.com/m2plo"))
 
@@ -110,7 +112,7 @@ async def restart(ctx):
     await bot.close()
 
 @bot.command(name="announce")
-async def announce(ctx, channel: discord.TextChannel, *, message):
+async def announce(ctx, *, message):
     if ctx.author.id not in DEVELOPER_IDS:
         await ctx.send("Only Ghostyy can access this command.")
         return
@@ -119,7 +121,13 @@ async def announce(ctx, channel: discord.TextChannel, *, message):
         await ctx.send("This command can only be used in the specified server.")
         return
 
-    confirmation_message = await ctx.send(f"Are you sure you want to send this message to the channel '{channel.name}'?\n```\n{message}\n```\nType 'yes' to confirm or 'no' to cancel.")
+    announcement_channel = bot.get_channel(ANNOUNCEMENT_CHANNEL_ID)
+
+    if not announcement_channel:
+        await ctx.send("Announcement channel not found.")
+        return
+
+    confirmation_message = await ctx.send(f"Are you sure you want to send this message to the channel '{announcement_channel.name}'?\n```\n{message}\n```\nType 'yes' to confirm or 'no' to cancel.")
 
     def check(m):
         return m.author == ctx.author and m.channel == ctx.channel
@@ -142,9 +150,9 @@ async def announce(ctx, channel: discord.TextChannel, *, message):
 
     if confirmed:
         try:
-            await channel.send(message)
-            confirmation_sent = await ctx.send(f"Announcement sent to {channel.mention}.")
-            print(f"Announcement sent to channel: {channel.name} ({channel.id})")
+            await announcement_channel.send(message)
+            confirmation_sent = await ctx.send(f"Announcement sent to {announcement_channel.mention}.")
+            print(f"Announcement sent to channel: {announcement_channel.name} ({announcement_channel.id})")
 
             await confirmation_message.delete()
             await ctx.message.delete()
@@ -154,7 +162,7 @@ async def announce(ctx, channel: discord.TextChannel, *, message):
             await ctx.send(f"Error sending announcement: {e}")
             await confirmation_message.delete()
             await ctx.message.delete()
-            print(f"Error sending announcement to channel {channel.name} ({channel.id}): {e}")
+            print(f"Error sending announcement to channel {announcement_channel.name} ({announcement_channel.id}): {e}")
 
 
 bot.run(TOKEN)
