@@ -82,7 +82,7 @@ async def on_ready():
 
     while True:
         await send_random_image()
-        await asyncio.sleep(420)  # 7 minutes
+        await asyncio.sleep(1800)  # 30 minutes
 
 
 @bot.command(name="status")
