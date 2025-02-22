@@ -71,6 +71,8 @@ def get_bot_uptime():
     return f"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds"
 
 DEVELOPER_IDS = [878543757245550602]  # Replace with your developer ID
+ANNOUNCER_IDS = [736212585573122048, 1319339948117201077,1061289422924038184]  # Add user IDs here
+
 
 @bot.event
 async def on_ready():
@@ -78,7 +80,6 @@ async def on_ready():
     print(f"Target channel ID (hardcoded): {TARGET_CHANNEL_ID}")
     print(f"Target Guild ID (hardcoded): {TARGET_GUILD_ID}")
     print(f"Announcement Channel ID (hardcoded): {ANNOUNCEMENT_CHANNEL_ID}")
-
 
     await bot.change_presence(status=discord.Status.do_not_disturb, activity=discord.Streaming(name="Hail M2PLO", url="http://youtube.com/m2plo"))
 
@@ -113,8 +114,8 @@ async def restart(ctx):
 
 @bot.command(name="announce")
 async def announce(ctx, *, message):
-    if ctx.author.id not in DEVELOPER_IDS:
-        await ctx.send("Only Ghostyy can access this command.")
+    if ctx.author.id not in DEVELOPER_IDS and ctx.author.id not in ANNOUNCER_IDS:
+        await ctx.send("You do not have permission to use this command.")
         return
 
     if ctx.guild.id != TARGET_GUILD_ID:
